@@ -58,7 +58,7 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<PeopleBloc>(context).add(PeopleRequestedEvent(id: 1));
+    BlocProvider.of<PeopleBloc>(context).add(PeopleRequestedEvent(id: 7));
 
     return SafeArea(
       child: BlocBuilder<PeopleBloc, PeopleState>(

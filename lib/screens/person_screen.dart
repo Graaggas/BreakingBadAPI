@@ -3,6 +3,7 @@ import 'package:breaking_bad_api/models/peoples/people_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class PersonScreen extends StatelessWidget {
   const PersonScreen({Key? key, required this.people}) : super(key: key);
@@ -11,24 +12,33 @@ class PersonScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("width = ${MediaQuery.of(context).size.width}");
     return SafeArea(
       child: Scaffold(
         // appBar: AppBar(
         //   title: Text('Title'),
         // ),
         body: Container(
+          color: Colors.white,
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              //* stretch отвечает за растягивание объекта! Важно для растягивания мелких картинок до ширины экрана. Если в потомках будет FittedBox - вызовет ошибку.
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Stack(
                   children: [
-                    Image.network(people.img),
+                    FadeInImage.memoryNetwork(
+                      width: double.infinity,
+                      fit: BoxFit.fitWidth,
+                      placeholder: kTransparentImage,
+                      image: people.img,
+                    ),
+
+                    // Image.network(
+                    //   people.img,
+                    //   width: double.infinity,
+                    //   fit: BoxFit.fitWidth,
+                    // ),
                     Positioned(
                       bottom: 0,
                       child: buildFormWithName(context),
