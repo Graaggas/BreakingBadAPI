@@ -2,6 +2,7 @@ import 'package:breaking_bad_api/misc/consts.dart';
 import 'package:breaking_bad_api/models/peoples/people_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class PersonScreen extends StatelessWidget {
   const PersonScreen({Key? key, required this.people}) : super(key: key);
@@ -16,50 +17,141 @@ class PersonScreen extends StatelessWidget {
         // appBar: AppBar(
         //   title: Text('Title'),
         // ),
-        body: SingleChildScrollView(
-          child: Column(
-            //* stretch отвечает за растягивание объекта! Важно для растягивания мелких картинок до ширины экрана. Если в потомках будет FittedBox - вызовет ошибку.
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Stack(
-                children: [
-                  Image.network(people.img),
-                  Positioned(
-                    bottom: 0,
-                    child: buildFormWithName(context),
-                  ),
-                ],
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                color: Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+        body: Container(
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              //* stretch отвечает за растягивание объекта! Важно для растягивания мелких картинок до ширины экрана. Если в потомках будет FittedBox - вызовет ошибку.
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Stack(
                   children: [
-                    Text(
-                      "list with Bio and Quotas",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "name: ",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        Text(
-                          "Answer ",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
+                    Image.network(people.img),
+                    Positioned(
+                      bottom: 0,
+                      child: buildFormWithName(context),
                     ),
                   ],
                 ),
-              ),
-            ],
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 32.0,
+                          right: 32.0,
+                          bottom: 16.0,
+                          top: 16.0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              "Bio",
+                              style: GoogleFonts.josefinSans(
+                                color: kColorPersonNameInPanel,
+                                fontSize: 24,
+                              ),
+                            ),
+                            Text(
+                              "Quotes",
+                              style: GoogleFonts.josefinSans(
+                                color: kColorPersonNameInPanel,
+                                fontSize: 24,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      buildFields(
+                          fieldName: "Nickname", dataField: people.nickname),
+                      buildFields(
+                          fieldName: "Date of Birth",
+                          dataField: people.birthday),
+                      buildFields(
+                          fieldName: "Actor", dataField: people.portrayed),
+                      buildFields(
+                          fieldName: "Occupation",
+                          dataArrayField: people.occupation),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Padding buildFields(
+      {required String fieldName,
+      String? dataField,
+      List<String>? dataArrayField}) {
+    if (dataArrayField == null && dataField == null) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 32.0,
+        right: 32.0,
+        bottom: 16.0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Expanded(
+            child: AutoSizeText(
+              "$fieldName:",
+              style: GoogleFonts.josefinSans(
+                color: kColorPersonNameInPanel,
+                fontSize: 24,
+              ),
+              minFontSize: 10,
+              maxLines: 1,
+            ),
+          ),
+          Expanded(
+            child: SizedBox(
+              width: 10,
+            ),
+          ),
+          dataArrayField == null
+              ? Expanded(
+                  child: AutoSizeText(
+                    "${dataField!}",
+                    style: GoogleFonts.josefinSans(
+                      color: Colors.black87,
+                      fontSize: 24,
+                    ),
+                    minFontSize: 10,
+                    maxLines: 2,
+                  ),
+                )
+              : Expanded(
+                  child: ListView.builder(
+                      itemCount: dataArrayField.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return AutoSizeText(
+                          dataArrayField[index],
+                          minFontSize: 18,
+                          maxLines: 2,
+                          style: GoogleFonts.josefinSans(
+                            color: Colors.black87,
+                            fontSize: 24,
+                          ),
+                        );
+                      })),
+        ],
       ),
     );
   }
