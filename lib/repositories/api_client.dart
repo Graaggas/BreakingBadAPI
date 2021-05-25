@@ -26,7 +26,7 @@ class APIClient {
     return People.fromJson(peopleJson[0]);
   }
 
-  Future<Quotes> fetchQuoteApi(String author) async {
+  Future<List<Quotes>> fetchQuoteApi(String author) async {
     final mainUrl = '$baseUrl/quote?author=$author';
 
     final quotesResponse = await this.httpClient.get(Uri.parse(mainUrl));
@@ -34,8 +34,11 @@ class APIClient {
     if (quotesResponse.statusCode != 200) {
       throw Exception('error getting quote with author');
     }
-    final quoteJson = jsonDecode(quotesResponse.body);
+    // final quoteJson = jsonDecode(quotesResponse.body);
 
-    return Quotes.fromJason(quoteJson[0]);
+    List<Quotes> quotesList = (json.decode(quotesResponse.body) as List)
+        .map((e) => Quotes.fromJason(e))
+        .toList();
+    return quotesList;
   }
 }

@@ -160,13 +160,26 @@ class _PersonScreenState extends State<PersonScreen> {
                                   }
                                   if (state is QuotasLoadSuccessState) {
                                     final quote = state.quotes;
-                                    return Text(
-                                      "- " + quote.quote,
-                                      style: GoogleFonts.josefinSans(
-                                        color: kColorPersonNameInPanel,
-                                        fontSize: 24,
-                                      ),
-                                    );
+                                    return ListView.builder(
+                                        itemCount: quote.length,
+                                        physics: ScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return Text(
+                                            "- " + quote[index].quote + "\n",
+                                            style: GoogleFonts.josefinSans(
+                                              color: kColorPersonNameInPanel,
+                                              fontSize: 24,
+                                            ),
+                                          );
+                                        });
+                                    // Text(
+                                    //   "- " + quote[1].quote,
+                                    //   style: GoogleFonts.josefinSans(
+                                    //     color: kColorPersonNameInPanel,
+                                    //     fontSize: 24,
+                                    //   ),
+                                    // );
                                   }
                                   return Container();
                                 },
@@ -244,7 +257,8 @@ class _PersonScreenState extends State<PersonScreen> {
                             fontSize: 24,
                           ),
                         );
-                      })),
+                      }),
+                ),
         ],
       ),
     );
