@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class People extends Equatable {
+class Person extends Equatable {
   final int charId;
   final String name;
   final String birthday;
@@ -13,7 +13,7 @@ class People extends Equatable {
   final String category;
   final List<int> betterCallSaulAppearance;
 
-  const People({
+  const Person({
     required this.charId,
     required this.name,
     required this.birthday,
@@ -42,8 +42,8 @@ class People extends Equatable {
         betterCallSaulAppearance,
       ];
 
-  static People fromJson(dynamic json) {
-    return People(
+  static Person fromJson(dynamic json) {
+    return Person(
       charId: json['char_id'],
       name: json['name'],
       birthday: json["birthday"],

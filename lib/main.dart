@@ -1,24 +1,19 @@
-import 'dart:async';
-import 'dart:math';
-
+import 'package:breaking_bad_api/bloc_characters/characters_barrel.dart';
+import 'package:breaking_bad_api/bloc_person/blocs_barrel.dart';
+import 'package:breaking_bad_api/bloc_person/person_bloc_observer.dart';
 import 'package:breaking_bad_api/bloc_quotas/quotas_barrel.dart';
+import 'package:breaking_bad_api/repositories/characters_repo.dart';
 import 'package:breaking_bad_api/repositories/quotes_repo.dart';
+import 'package:breaking_bad_api/screens/landing_page.dart';
 import 'package:breaking_bad_api/screens/person_screen.dart';
-import 'package:breaking_bad_api/screens/random_person.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:breaking_bad_api/bloc_people/blocs_barrel.dart';
-import 'package:breaking_bad_api/bloc_people/people_bloc_observer.dart';
 import 'package:breaking_bad_api/repositories/api_client.dart';
-import 'package:breaking_bad_api/repositories/people_repo.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:breaking_bad_api/repositories/person_repo.dart';
 import 'package:http/http.dart' as http;
 
-import 'bloc_quotas/quotes_bloc_observer.dart';
-
 void main() {
-  Bloc.observer = PeopleBlocObsever();
-  Bloc.observer = QuotasBlocObserver();
+  Bloc.observer = PersonBlocObsever();
 
   final PeopleRepo peopleRepo = PeopleRepo(
     apiClient: APIClient(httpClient: http.Client()),
@@ -28,20 +23,26 @@ void main() {
     apiClient: APIClient(httpClient: http.Client()),
   );
 
+  final CharactersRepo charactersRepo =
+      CharactersRepo(apiClient: APIClient(httpClient: http.Client()));
+
   runApp(MyApp(
     peopleRepo: peopleRepo,
     quotesRepo: quotesRepo,
+    charactersRepo: charactersRepo,
   ));
 }
 
 class MyApp extends StatelessWidget {
   final PeopleRepo peopleRepo;
   final QuotesRepo quotesRepo;
+  final CharactersRepo charactersRepo;
 
   MyApp({
     Key? key,
     required this.peopleRepo,
     required this.quotesRepo,
+    required this.charactersRepo,
   }) : super(key: key);
 
   // This widget is the root of your application.
@@ -60,10 +61,13 @@ class MyApp extends StatelessWidget {
       home: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => PeopleBloc(peopleRepo: peopleRepo),
+            create: (context) => PersonBloc(peopleRepo: peopleRepo),
           ),
           BlocProvider(
             create: (context) => QuotasBloc(quotesRepo: quotesRepo),
+          ),
+          BlocProvider(
+            create: (context) => CharactersBloc(charactersRepo: charactersRepo),
           ),
         ],
         child: LandingPage(),
@@ -72,39 +76,39 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LandingPage extends StatelessWidget {
-  const LandingPage({Key? key}) : super(key: key);
+// class LandingPage000 extends StatelessWidget {
+//   const LandingPage({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    BlocProvider.of<PeopleBloc>(context).add(PeopleRequestedEvent(id: 2));
+//   @override
+//   Widget build(BuildContext context) {
+//     BlocProvider.of<PersonBloc>(context).add(PersonRequestedEvent(id: 3));
 
-    return SafeArea(
-      child: BlocBuilder<PeopleBloc, PeopleState>(
-        builder: (context, state) {
-          if (state is PeopleInitialState) {
-            return Center(
-              child: Text(
-                "Initial",
-                style: TextStyle(fontSize: 16, color: Colors.white70),
-              ),
-            );
-          }
-          if (state is PeopleLoadInProgressState) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (state is PeopleLoadSuccessState) {
-            final people = state.people;
-            return PersonScreen(people: people);
-          }
-          return Container();
-        },
-      ),
-    );
-  }
-}
+//     return SafeArea(
+//       child: BlocBuilder<PersonBloc, PersonState>(
+//         builder: (context, state) {
+//           if (state is PersonInitialState) {
+//             return Center(
+//               child: Text(
+//                 "Initial",
+//                 style: TextStyle(fontSize: 16, color: Colors.white70),
+//               ),
+//             );
+//           }
+//           if (state is PersonLoadInProgressState) {
+//             return Center(
+//               child: CircularProgressIndicator(),
+//             );
+//           }
+//           if (state is PersonLoadSuccessState) {
+//             final person = state.person;
+//             return PersonScreen(person: person);
+//           }
+//           return Container();
+//         },
+//       ),
+//     );
+//   }
+// }
 
 // class OneTest extends StatelessWidget {
 //   @override

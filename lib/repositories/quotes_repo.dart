@@ -6,7 +6,7 @@ class QuotesRepo {
 
   QuotesRepo({
     required this.apiClient,
-  }) : assert(apiClient != null);
+  });
 
   Future<List<Quotes>> getQuote(String author) async {
     return apiClient.fetchQuoteApi(author);

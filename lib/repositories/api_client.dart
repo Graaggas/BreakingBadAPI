@@ -1,9 +1,8 @@
 import 'dart:convert';
-
+import 'package:breaking_bad_api/models/characters/characters.dart';
+import 'package:breaking_bad_api/models/person/person_barrel.dart';
 import 'package:breaking_bad_api/models/quotes/quotes.dart';
-import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
-import 'package:breaking_bad_api/models/peoples/people_barrel.dart';
 
 class APIClient {
   static const baseUrl = 'https://www.breakingbadapi.com/api';
@@ -12,9 +11,9 @@ class APIClient {
 
   APIClient({
     required this.httpClient,
-  }) : assert(httpClient != null);
+  });
 
-  Future<People> fetchPeopleAPI(int id) async {
+  Future<Person> fetchPersonAPI(int id) async {
     final mainUrl = '$baseUrl/characters/$id/';
 
     final peopleResponse = await this.httpClient.get(Uri.parse(mainUrl));
@@ -23,7 +22,7 @@ class APIClient {
       throw Exception('error getting people with id');
     }
     final peopleJson = jsonDecode(peopleResponse.body);
-    return People.fromJson(peopleJson[0]);
+    return Person.fromJson(peopleJson[0]);
   }
 
   Future<List<Quotes>> fetchQuoteApi(String author) async {
@@ -40,5 +39,19 @@ class APIClient {
         .map((e) => Quotes.fromJason(e))
         .toList();
     return quotesList;
+  }
+
+  Future<Characters> fetchCharactersAPI() async {
+    final mainUrl = '$baseUrl/characters';
+
+    final charactersResponse = await this.httpClient.get(Uri.parse(mainUrl));
+
+    if (charactersResponse.statusCode != 200) {
+      throw Exception('error getting characters');
+    }
+
+    final characters = jsonDecode(charactersResponse.body);
+
+    return Characters.fromJson(characters);
   }
 }

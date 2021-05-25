@@ -1,2 +1,2 @@
 export 'api_client.dart';
-export 'people_repo.dart';
+export 'person_repo.dart';

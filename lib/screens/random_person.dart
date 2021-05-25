@@ -1,11 +1,11 @@
-import 'package:breaking_bad_api/models/peoples/people_barrel.dart';
+import 'package:breaking_bad_api/models/person/person_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 
 class RandomPerson extends StatelessWidget {
   const RandomPerson({Key? key, required this.person}) : super(key: key);
 
-  final People person;
+  final Person person;
 
   @override
   Widget build(BuildContext context) {

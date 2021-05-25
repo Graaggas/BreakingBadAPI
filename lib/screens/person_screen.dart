@@ -1,6 +1,7 @@
+import 'package:breaking_bad_api/bloc_characters/characters_barrel.dart';
 import 'package:breaking_bad_api/bloc_quotas/quotas_barrel.dart';
 import 'package:breaking_bad_api/misc/consts.dart';
-import 'package:breaking_bad_api/models/peoples/people_barrel.dart';
+import 'package:breaking_bad_api/models/person/person_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,9 +9,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class PersonScreen extends StatefulWidget {
-  const PersonScreen({Key? key, required this.people}) : super(key: key);
+  const PersonScreen({Key? key, required this.person}) : super(key: key);
 
-  final People people;
+  final Person person;
 
   @override
   _PersonScreenState createState() => _PersonScreenState();
@@ -21,9 +22,8 @@ class _PersonScreenState extends State<PersonScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> nameForQuoteRes = widget.people.name.split(" ");
+    List<String> nameForQuoteRes = widget.person.name.split(" ");
     String nameForQuote = "${nameForQuoteRes[0]}+${nameForQuoteRes[1]}";
-    print("name = $nameForQuote");
 
     return SafeArea(
       child: Scaffold(
@@ -44,7 +44,7 @@ class _PersonScreenState extends State<PersonScreen> {
                       width: double.infinity,
                       fit: BoxFit.fitWidth,
                       placeholder: kTransparentImage,
-                      image: widget.people.img,
+                      image: widget.person.img,
                     ),
 
                     // Image.network(
@@ -104,6 +104,9 @@ class _PersonScreenState extends State<PersonScreen> {
                                   BlocProvider.of<QuotasBloc>(context).add(
                                       QuotasRequestedEvent(
                                           author: nameForQuote));
+
+                                  BlocProvider.of<CharactersBloc>(context)
+                                      .add(CharactersRequestedEvent());
                                 });
                               },
                               child: _isBio
@@ -131,16 +134,16 @@ class _PersonScreenState extends State<PersonScreen> {
                               children: [
                                 buildFields(
                                     fieldName: "Nickname",
-                                    dataField: widget.people.nickname),
+                                    dataField: widget.person.nickname),
                                 buildFields(
                                     fieldName: "Date of Birth",
-                                    dataField: widget.people.birthday),
+                                    dataField: widget.person.birthday),
                                 buildFields(
                                     fieldName: "Actor",
-                                    dataField: widget.people.portrayed),
+                                    dataField: widget.person.portrayed),
                                 buildFields(
                                     fieldName: "Occupation",
-                                    dataArrayField: widget.people.occupation),
+                                    dataArrayField: widget.person.occupation),
                               ],
                             )
                           : Padding(
@@ -284,7 +287,7 @@ class _PersonScreenState extends State<PersonScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: Text(
-                widget.people.name,
+                widget.person.name,
                 style: GoogleFonts.josefinSans(
                   color: kColorPersonNameInPanel,
                   fontWeight: FontWeight.bold,
@@ -295,7 +298,7 @@ class _PersonScreenState extends State<PersonScreen> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                widget.people.status,
+                widget.person.status,
                 style: GoogleFonts.josefinSans(
                   color: kColorBackAndAliveInfo,
                   fontWeight: FontWeight.bold,
