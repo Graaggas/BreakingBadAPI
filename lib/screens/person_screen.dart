@@ -21,6 +21,10 @@ class _PersonScreenState extends State<PersonScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> nameForQuoteRes = widget.people.name.split(" ");
+    String nameForQuote = "${nameForQuoteRes[0]}+${nameForQuoteRes[1]}";
+    print("name = $nameForQuote");
+
     return SafeArea(
       child: Scaffold(
         // appBar: AppBar(
@@ -99,7 +103,7 @@ class _PersonScreenState extends State<PersonScreen> {
                                   _isBio = false;
                                   BlocProvider.of<QuotasBloc>(context).add(
                                       QuotasRequestedEvent(
-                                          author: "Walter+White"));
+                                          author: nameForQuote));
                                 });
                               },
                               child: _isBio
