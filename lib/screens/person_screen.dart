@@ -1,14 +1,23 @@
+import 'package:breaking_bad_api/bloc_quotas/quotas_barrel.dart';
 import 'package:breaking_bad_api/misc/consts.dart';
 import 'package:breaking_bad_api/models/peoples/people_barrel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class PersonScreen extends StatelessWidget {
+class PersonScreen extends StatefulWidget {
   const PersonScreen({Key? key, required this.people}) : super(key: key);
 
   final People people;
+
+  @override
+  _PersonScreenState createState() => _PersonScreenState();
+}
+
+class _PersonScreenState extends State<PersonScreen> {
+  bool _isBio = true;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +40,7 @@ class PersonScreen extends StatelessWidget {
                       width: double.infinity,
                       fit: BoxFit.fitWidth,
                       placeholder: kTransparentImage,
-                      image: people.img,
+                      image: widget.people.img,
                     ),
 
                     // Image.network(
@@ -61,33 +70,108 @@ class PersonScreen extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(
-                              "Bio",
-                              style: GoogleFonts.josefinSans(
-                                color: kColorPersonNameInPanel,
-                                fontSize: 24,
-                              ),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _isBio = true;
+                                });
+                              },
+                              child: _isBio
+                                  ? Text(
+                                      "Bio",
+                                      style: GoogleFonts.josefinSans(
+                                        decoration: TextDecoration.underline,
+                                        color: kColorBackAndAliveInfo,
+                                        fontSize: 24,
+                                      ),
+                                    )
+                                  : Text(
+                                      "Bio",
+                                      style: GoogleFonts.josefinSans(
+                                        color: kColorPersonNameInPanel,
+                                        fontSize: 24,
+                                      ),
+                                    ),
                             ),
-                            Text(
-                              "Quotes",
-                              style: GoogleFonts.josefinSans(
-                                color: kColorPersonNameInPanel,
-                                fontSize: 24,
-                              ),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _isBio = false;
+                                  BlocProvider.of<QuotasBloc>(context).add(
+                                      QuotasRequestedEvent(
+                                          author: "Walter+White"));
+                                });
+                              },
+                              child: _isBio
+                                  ? Text(
+                                      "Quotes",
+                                      style: GoogleFonts.josefinSans(
+                                        color: kColorPersonNameInPanel,
+                                        fontSize: 24,
+                                      ),
+                                    )
+                                  : Text(
+                                      "Quotes",
+                                      style: GoogleFonts.josefinSans(
+                                        decoration: TextDecoration.underline,
+                                        color: kColorBackAndAliveInfo,
+                                        fontSize: 24,
+                                      ),
+                                    ),
                             ),
                           ],
                         ),
                       ),
-                      buildFields(
-                          fieldName: "Nickname", dataField: people.nickname),
-                      buildFields(
-                          fieldName: "Date of Birth",
-                          dataField: people.birthday),
-                      buildFields(
-                          fieldName: "Actor", dataField: people.portrayed),
-                      buildFields(
-                          fieldName: "Occupation",
-                          dataArrayField: people.occupation),
+                      _isBio
+                          ? Column(
+                              children: [
+                                buildFields(
+                                    fieldName: "Nickname",
+                                    dataField: widget.people.nickname),
+                                buildFields(
+                                    fieldName: "Date of Birth",
+                                    dataField: widget.people.birthday),
+                                buildFields(
+                                    fieldName: "Actor",
+                                    dataField: widget.people.portrayed),
+                                buildFields(
+                                    fieldName: "Occupation",
+                                    dataArrayField: widget.people.occupation),
+                              ],
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: BlocBuilder<QuotasBloc, QuotasState>(
+                                builder: (context, state) {
+                                  if (state is QuotasInitialState) {
+                                    return Center(
+                                      child: Text(
+                                        "Initial",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white70),
+                                      ),
+                                    );
+                                  }
+                                  if (state is QuotasLoadInProgressState) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                  if (state is QuotasLoadSuccessState) {
+                                    final quote = state.quotes;
+                                    return Text(
+                                      "- " + quote.quote,
+                                      style: GoogleFonts.josefinSans(
+                                        color: kColorPersonNameInPanel,
+                                        fontSize: 24,
+                                      ),
+                                    );
+                                  }
+                                  return Container();
+                                },
+                              ),
+                            ),
                     ],
                   ),
                 ),
@@ -182,7 +266,7 @@ class PersonScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: Text(
-                people.name,
+                widget.people.name,
                 style: GoogleFonts.josefinSans(
                   color: kColorPersonNameInPanel,
                   fontWeight: FontWeight.bold,
@@ -193,7 +277,7 @@ class PersonScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                people.status,
+                widget.people.status,
                 style: GoogleFonts.josefinSans(
                   color: kColorBackAndAliveInfo,
                   fontWeight: FontWeight.bold,

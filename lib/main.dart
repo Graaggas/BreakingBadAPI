@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:breaking_bad_api/bloc_quotas/quotas_barrel.dart';
+import 'package:breaking_bad_api/repositories/quotes_repo.dart';
 import 'package:breaking_bad_api/screens/person_screen.dart';
 import 'package:breaking_bad_api/screens/random_person.dart';
 import 'package:flutter/material.dart';
@@ -12,24 +14,34 @@ import 'package:breaking_bad_api/repositories/people_repo.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
+import 'bloc_quotas/quotes_bloc_observer.dart';
+
 void main() {
   Bloc.observer = PeopleBlocObsever();
+  Bloc.observer = QuotasBlocObserver();
 
   final PeopleRepo peopleRepo = PeopleRepo(
     apiClient: APIClient(httpClient: http.Client()),
   );
 
+  final QuotesRepo quotesRepo = QuotesRepo(
+    apiClient: APIClient(httpClient: http.Client()),
+  );
+
   runApp(MyApp(
     peopleRepo: peopleRepo,
+    quotesRepo: quotesRepo,
   ));
 }
 
 class MyApp extends StatelessWidget {
   final PeopleRepo peopleRepo;
+  final QuotesRepo quotesRepo;
 
   MyApp({
     Key? key,
     required this.peopleRepo,
+    required this.quotesRepo,
   }) : super(key: key);
 
   // This widget is the root of your application.
@@ -45,8 +57,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BlocProvider(
-        create: (context) => PeopleBloc(peopleRepo: peopleRepo),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => PeopleBloc(peopleRepo: peopleRepo),
+          ),
+          BlocProvider(
+            create: (context) => QuotasBloc(quotesRepo: quotesRepo),
+          ),
+        ],
         child: LandingPage(),
       ),
     );
