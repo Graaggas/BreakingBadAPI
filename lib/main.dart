@@ -5,7 +5,6 @@ import 'package:breaking_bad_api/bloc_quotas/quotas_barrel.dart';
 import 'package:breaking_bad_api/repositories/characters_repo.dart';
 import 'package:breaking_bad_api/repositories/quotes_repo.dart';
 import 'package:breaking_bad_api/screens/landing_page.dart';
-import 'package:breaking_bad_api/screens/person_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:breaking_bad_api/repositories/api_client.dart';
