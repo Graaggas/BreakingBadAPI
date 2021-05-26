@@ -1,3 +1,4 @@
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:breaking_bad_api/bloc_characters/characters_barrel.dart';
 import 'package:breaking_bad_api/bloc_quotas/quotas_barrel.dart';
 import 'package:breaking_bad_api/misc/consts.dart';
@@ -9,9 +10,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class PersonScreen extends StatefulWidget {
-  const PersonScreen({Key? key, required this.person}) : super(key: key);
+  const PersonScreen({Key? key, required this.person, required this.quotasBloc})
+      : super(key: key);
 
   final Person person;
+  final QuotasBloc quotasBloc;
 
   @override
   _PersonScreenState createState() => _PersonScreenState();
@@ -22,14 +25,34 @@ class _PersonScreenState extends State<PersonScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print("==============> name in person_screen  -  ${widget.person.name}");
     List<String> nameForQuoteRes = widget.person.name.split(" ");
-    String nameForQuote = "${nameForQuoteRes[0]}+${nameForQuoteRes[1]}";
+    // print('NAMEFORQUOTERES: ${nameForQuoteRes[0]}');
+
+    String nameForQuote = "";
+
+    // print("~~~~~~~~~~~~~~ length = ${nameForQuoteRes.length}");
+
+    if (nameForQuoteRes.length == 1) {
+      // print("~~~~~~~~~~~~~~ one");
+      nameForQuote = "${nameForQuoteRes[0]}";
+    } else {
+      // print("~~~~~~~~~~~~~~ two");
+
+      nameForQuote = "${nameForQuoteRes[0]}+${nameForQuoteRes[1]}";
+    }
+
+    // String nameForQuote = "${nameForQuoteRes[0]}+${nameForQuoteRes[1]}";
 
     return SafeArea(
       child: Scaffold(
-        // appBar: AppBar(
-        //   title: Text('Title'),
-        // ),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          title: Text(
+            "1111",
+            style: TextStyle(fontSize: 22, color: Colors.white),
+          ),
+        ),
         body: Container(
           color: Colors.white,
           alignment: Alignment.topCenter,
@@ -101,12 +124,14 @@ class _PersonScreenState extends State<PersonScreen> {
                               onTap: () {
                                 setState(() {
                                   _isBio = false;
-                                  BlocProvider.of<QuotasBloc>(context).add(
-                                      QuotasRequestedEvent(
-                                          author: nameForQuote));
+                                  widget.quotasBloc.add(QuotasRequestedEvent(
+                                      author: nameForQuote));
+                                  // BlocProvider.of<QuotasBloc>(context).add(
+                                  //     QuotasRequestedEvent(
+                                  //         author: nameForQuote));
 
-                                  BlocProvider.of<CharactersBloc>(context)
-                                      .add(CharactersRequestedEvent());
+                                  // BlocProvider.of<CharactersBloc>(context)
+                                  //     .add(CharactersRequestedEvent());
                                 });
                               },
                               child: _isBio
@@ -162,24 +187,44 @@ class _PersonScreenState extends State<PersonScreen> {
                                   }
                                   if (state is QuotasLoadInProgressState) {
                                     return Center(
-                                      child: CircularProgressIndicator(),
+                                      child: JumpingText(
+                                        'Loading...',
+                                        style: TextStyle(
+                                          color: kColorPersonNameInPanel,
+                                          fontSize: 20,
+                                        ),
+                                      ),
                                     );
                                   }
                                   if (state is QuotasLoadSuccessState) {
                                     final quote = state.quotes;
-                                    return ListView.builder(
-                                        itemCount: quote.length,
-                                        physics: ScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) {
-                                          return Text(
-                                            "- " + quote[index].quote + "\n",
-                                            style: GoogleFonts.josefinSans(
-                                              color: kColorPersonNameInPanel,
-                                              fontSize: 24,
+
+                                    return quote.length != 0
+                                        ? ListView.builder(
+                                            itemCount: quote.length,
+                                            physics: ScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemBuilder: (context, index) {
+                                              return Text(
+                                                "- " +
+                                                    quote[index].quote +
+                                                    "\n",
+                                                style: GoogleFonts.josefinSans(
+                                                  color:
+                                                      kColorPersonNameInPanel,
+                                                  fontSize: 24,
+                                                ),
+                                              );
+                                            })
+                                        : Center(
+                                            child: Text(
+                                              "No quotes...",
+                                              style: TextStyle(
+                                                color: kColorPersonNameInPanel,
+                                                fontSize: 20,
+                                              ),
                                             ),
                                           );
-                                        });
                                     // Text(
                                     //   "- " + quote[1].quote,
                                     //   style: GoogleFonts.josefinSans(

@@ -1,8 +1,11 @@
 import 'package:breaking_bad_api/bloc_characters/characters_barrel.dart';
-import 'package:breaking_bad_api/misc/consts.dart';
+import 'package:breaking_bad_api/bloc_quotas/quotas_barrel.dart';
+import 'package:breaking_bad_api/screens/person_screen.dart';
+import 'package:breaking_bad_api/screens/random_person.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class LandingPage extends StatelessWidget {
@@ -15,13 +18,6 @@ class LandingPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         extendBodyBehindAppBar: false,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Text(
-            "1111",
-            style: TextStyle(fontSize: 22, color: Colors.white),
-          ),
-        ),
         body: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -36,7 +32,13 @@ class LandingPage extends StatelessWidget {
                 }
                 if (state is CharactersLoadInProgressState) {
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: JumpingText(
+                      'Loading...',
+                      style: TextStyle(
+                        color: Colors.white54,
+                        fontSize: 20,
+                      ),
+                    ),
                   );
                 }
                 if (state is CharactersLoadFailureState) {
@@ -48,30 +50,46 @@ class LandingPage extends StatelessWidget {
                 if (state is CharactersLoadSuccessState) {
                   final listOfChars = state.characters.characters;
                   return ListView.separated(
-                      shrinkWrap: true,
-                      physics: ScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Center(
-                            child: Text(
-                              listOfChars[index].name.toString(),
-                              style: GoogleFonts.josefinSans(
-                                color: Colors.white,
-                                fontSize: 24,
-                              ),
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Center(
+                          child: Text(
+                            listOfChars[index].name.toString(),
+                            style: GoogleFonts.josefinSans(
+                              color: Colors.white,
+                              fontSize: 24,
                             ),
                           ),
-                          leading: FadeInImage.memoryNetwork(
-                            // width: double.infinity,
-                            fit: BoxFit.contain,
-                            placeholder: kTransparentImage,
-                            image: listOfChars[index].img,
-                          ),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) =>
-                          Divider(),
-                      itemCount: listOfChars.length);
+                        ),
+                        leading: FadeInImage.memoryNetwork(
+                          // width: double.infinity,
+                          fit: BoxFit.contain,
+                          placeholder: kTransparentImage,
+                          image: listOfChars[index].img,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute<PersonScreen>(
+                                  builder: (_) => BlocProvider.value(
+                                        value: BlocProvider.of<QuotasBloc>(
+                                            context),
+                                        child: PersonScreen(
+                                          person: listOfChars[index],
+                                          quotasBloc:
+                                              BlocProvider.of<QuotasBloc>(
+                                                  context),
+                                        ),
+                                      )));
+                        },
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) =>
+                        Divider(),
+                    itemCount: listOfChars.length,
+                  );
                   //  Text(
                   //   listOfChars[25].name,
                   //   style: TextStyle(fontSize: 33, color: Colors.white),
