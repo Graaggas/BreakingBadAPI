@@ -1,5 +1,4 @@
 import 'package:progress_indicators/progress_indicators.dart';
-import 'package:breaking_bad_api/bloc_characters/characters_barrel.dart';
 import 'package:breaking_bad_api/bloc_quotas/quotas_barrel.dart';
 import 'package:breaking_bad_api/misc/consts.dart';
 import 'package:breaking_bad_api/models/person/person_barrel.dart';
@@ -25,33 +24,29 @@ class _PersonScreenState extends State<PersonScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print("==============> name in person_screen  -  ${widget.person.name}");
     List<String> nameForQuoteRes = widget.person.name.split(" ");
-    // print('NAMEFORQUOTERES: ${nameForQuoteRes[0]}');
 
     String nameForQuote = "";
 
-    // print("~~~~~~~~~~~~~~ length = ${nameForQuoteRes.length}");
-
     if (nameForQuoteRes.length == 1) {
-      // print("~~~~~~~~~~~~~~ one");
       nameForQuote = "${nameForQuoteRes[0]}";
     } else {
-      // print("~~~~~~~~~~~~~~ two");
-
       nameForQuote = "${nameForQuoteRes[0]}+${nameForQuoteRes[1]}";
     }
 
-    // String nameForQuote = "${nameForQuoteRes[0]}+${nameForQuoteRes[1]}";
-
     return SafeArea(
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Text(
-            "1111",
-            style: TextStyle(fontSize: 22, color: Colors.white),
+          elevation: 0,
+          iconTheme: IconThemeData(
+            color: kColorBackAndAliveInfo, //change your color here
           ),
+          backgroundColor: Colors.transparent,
+          // title: Text(
+          //   "Back",
+          //   style: TextStyle(fontSize: 22, color: kColorBackAndAliveInfo),
+          // ),
         ),
         body: Container(
           color: Colors.white,

@@ -11,6 +11,8 @@ import 'package:breaking_bad_api/repositories/api_client.dart';
 import 'package:breaking_bad_api/repositories/person_repo.dart';
 import 'package:http/http.dart' as http;
 
+import 'repositories/quotes_repo.dart';
+
 void main() {
   Bloc.observer = PersonBlocObsever();
 
