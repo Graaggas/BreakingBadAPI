@@ -79,9 +79,9 @@ class LandingPage extends StatelessWidget {
                                               context),
                                           child: PersonScreen(
                                             person: listOfChars[index],
-                                            quotasBloc:
-                                                BlocProvider.of<QuotasBloc>(
-                                                    context),
+                                            // quotasBloc:
+                                            //     BlocProvider.of<QuotasBloc>(
+                                            //         context),
                                           ),
                                         )));
                           },

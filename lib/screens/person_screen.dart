@@ -9,11 +9,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class PersonScreen extends StatefulWidget {
-  const PersonScreen({Key? key, required this.person, required this.quotasBloc})
-      : super(key: key);
+  const PersonScreen({Key? key, required this.person}) : super(key: key);
 
   final Person person;
-  final QuotasBloc quotasBloc;
 
   @override
   _PersonScreenState createState() => _PersonScreenState();
@@ -119,8 +117,11 @@ class _PersonScreenState extends State<PersonScreen> {
                               onTap: () {
                                 setState(() {
                                   _isBio = false;
-                                  widget.quotasBloc.add(QuotasRequestedEvent(
-                                      author: nameForQuote));
+                                  BlocProvider.of<QuotasBloc>(context).add(
+                                      QuotasRequestedEvent(
+                                          author: nameForQuote));
+                                  // widget.quotasBloc.add(QuotasRequestedEvent(
+                                  //     author: nameForQuote));
                                   // BlocProvider.of<QuotasBloc>(context).add(
                                   //     QuotasRequestedEvent(
                                   //         author: nameForQuote));
